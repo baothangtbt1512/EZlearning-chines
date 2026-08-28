@@ -1,0 +1,6 @@
+{
+  "name": "LearningEZ Chinese",
+  "description": "Ứng dụng học tiếng Trung tương tác với lộ trình phiêu lưu, bản đồ thế giới và bạn đồng hành Panda.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

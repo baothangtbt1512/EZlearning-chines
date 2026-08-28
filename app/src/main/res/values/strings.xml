@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">LearningEZ Chinese</string>
+    <string name="tab_home">Trang chủ</string>
+    <string name="tab_journey">Hành trình</string>
+    <string name="tab_profile">Hồ sơ</string>
+    <string name="tab_settings">Cài đặt</string>
+</resources>
