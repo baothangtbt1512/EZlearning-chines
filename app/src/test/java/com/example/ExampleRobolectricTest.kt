@@ -4,6 +4,10 @@ import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import com.example.data.LearnerRepository
 import com.example.data.World1Curriculum
+import com.example.data.World2Curriculum
+import com.example.data.World3Curriculum
+import com.example.data.World4Curriculum
+import com.example.data.World5Curriculum
 import com.example.model.SkillType
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
@@ -42,6 +46,27 @@ class ExampleRobolectricTest {
     assertNotNull(node9Boss)
     assertEquals(1, node9Boss?.microLessons?.size)
     assertEquals(8, node9Boss?.microLessons?.first()?.activities?.size)
+  }
+
+  @Test
+  fun `verify world 4 and world 5 curriculum 9 nodes exist each`() {
+    val coursesW4 = World4Curriculum.world4NodeCourses
+    assertEquals(9, coursesW4.size)
+    val w4Node1 = World4Curriculum.getNodeCourse("w4_n1")
+    assertNotNull(w4Node1)
+    assertEquals("School", w4Node1?.title)
+    val w4Boss = World4Curriculum.getNodeCourse("w4_n9")
+    assertNotNull(w4Boss)
+    assertEquals(2, w4Boss?.microLessons?.size)
+
+    val coursesW5 = World5Curriculum.world5NodeCourses
+    assertEquals(9, coursesW5.size)
+    val w5Node1 = World5Curriculum.getNodeCourse("w5_n1")
+    assertNotNull(w5Node1)
+    assertEquals("Beijing Market", w5Node1?.title)
+    val w5Boss = World5Curriculum.getNodeCourse("w5_n9")
+    assertNotNull(w5Boss)
+    assertEquals(2, w5Boss?.microLessons?.size)
   }
 
   @Test

@@ -193,33 +193,51 @@ val initialWorld1Nodes = listOf(
 )
 
 val initialWorld2Nodes = listOf(
-  JourneyNode("w2_n1", "Sinh Hoạt Hàng Ngày", NodeIconType.GENERAL_LESSON, false, true, false, "Qǐchuáng", "起床与早晨", "Học thói quen từ sáng đến tối.", 2),
-  JourneyNode("w2_n2", "Xem Giờ", NodeIconType.GENERAL_LESSON, false, true, false, "Xiànzài jǐ diǎn", "几点", "Nói giờ, phút và thời gian chuẩn xác.", 2),
-  JourneyNode("w2_n3", "Thứ & Ngày Tháng", NodeIconType.GENERAL_LESSON, false, true, false, "Xīngqī yǔ rìqī", "星期与日期", "Nói các ngày trong tuần và tháng.", 2),
-  JourneyNode("w2_n4", "Sở Thích", NodeIconType.GENERAL_LESSON, false, true, false, "Àihào", "我的爱好", "Bày tỏ thể thao, âm nhạc và giải trí.", 2),
-  JourneyNode("w2_n5", "Trùm Đời Sống", NodeIconType.BOSS_CHALLENGE, false, true, false, "Shēnghuó tiǎozhàn", "生活挑战", "Hoàn thành hội thoại lịch trình một ngày.", 2)
+  JourneyNode("w2_n1", "Gia Đình Tôi", NodeIconType.GENERAL_LESSON, false, true, false, "Jiārén", "我的家人", "Giới thiệu các thành viên trong gia đình: bố, mẹ, anh, chị, em.", 2),
+  JourneyNode("w2_n2", "Bạn Bè Của Tôi", NodeIconType.GENERAL_LESSON, false, true, false, "Péngyou", "我的朋友", "Nói về bạn bè, bạn học và quan hệ xã hội.", 2),
+  JourneyNode("w2_n3", "Bạn Bao Nhiêu Tuổi?", NodeIconType.GENERAL_LESSON, false, true, false, "Nǐ jǐ suì?", "你几岁？", "Hỏi và nói về tuổi tác kết hợp số đếm.", 2),
+  JourneyNode("w2_n4", "Bạn Làm Nghề Gì?", NodeIconType.GENERAL_LESSON, false, true, false, "Nǐ zuò shénme?", "你做什么？", "Nghề nghiệp: học sinh, giáo viên, bác sĩ.", 2),
+  JourneyNode("w2_n5", "Tôi Thích...", NodeIconType.GENERAL_LESSON, false, true, false, "Wǒ xǐhuan", "我喜欢", "Bày tỏ sở thích: âm nhạc, tiếng Trung, trà, cà phê.", 2),
+  JourneyNode("w2_n6", "Hôm Nay Thứ Mấy?", NodeIconType.GENERAL_LESSON, false, true, false, "Jīntiān xīngqī jǐ?", "今天星期几？", "Nói các ngày trong tuần từ Thứ Hai đến Chủ Nhật.", 2),
+  JourneyNode("w2_n7", "Bây Giờ Mấy Giờ?", NodeIconType.GENERAL_LESSON, false, true, false, "Xiànzài jǐ diǎn?", "现在几点？", "Hỏi và nói giờ giấc chính xác trong ngày.", 2),
+  JourneyNode("w2_n8", "Một Ngày Của Tôi", NodeIconType.GENERAL_LESSON, false, true, false, "Wǒ de yītiān", "我的一天", "Tổng hợp lịch trình từ sáng thức dậy đến tối đi ngủ.", 2),
+  JourneyNode("w2_n9", "Thử Thách Cuộc Sống", NodeIconType.BOSS_CHALLENGE, false, true, false, "Shēnghuó tiǎozhàn", "我的生活挑战", "Trùm World 2: Đấu trường thử thách toàn diện.", 2)
 )
 
 val initialWorld3Nodes = listOf(
-  JourneyNode("w3_n1", "Thành Viên Gia Đình", NodeIconType.GENERAL_LESSON, false, true, false, "Jiārén", "家人", "Giới thiệu cha mẹ, anh chị em và người thân.", 3),
-  JourneyNode("w3_n2", "Nhà Cửa & Phòng", NodeIconType.GENERAL_LESSON, false, true, false, "Fángjiān", "我的房间", "Khám phá phòng khách, bếp và phòng ngủ.", 3),
-  JourneyNode("w3_n3", "Thú Cưng Đáng Yêu", NodeIconType.GENERAL_LESSON, false, true, false, "Chǒngwù", "宠物", "Từ vựng về chó, mèo và chim muông.", 3),
-  JourneyNode("w3_n4", "Đồ Dùng Gia Đình", NodeIconType.GENERAL_LESSON, false, true, false, "Jiājù", "家具物品", "Các vật dụng và nội thất trong nhà.", 3),
-  JourneyNode("w3_n5", "Trùm Câu Chuyện Gia Đình", NodeIconType.BOSS_CHALLENGE, false, true, false, "Jiātíng gùshì", "家庭故事", "Kể câu chuyện gia đình bằng tiếng Trung.", 3)
+  JourneyNode("w3_n1", "Gia Đình Thân Yêu", NodeIconType.GENERAL_LESSON, false, true, false, "Jiārén", "我的家人", "Khám phá danh xưng cha mẹ, anh chị em.", 3),
+  JourneyNode("w3_n2", "Anh Ấy Là Ai?", NodeIconType.GENERAL_LESSON, false, true, false, "Tā shì shéi?", "他是谁？", "Xác định danh tính người thân: 他是谁, 他是我爸爸.", 3),
+  JourneyNode("w3_n3", "Nhà Có Mấy Người?", NodeIconType.GENERAL_LESSON, false, true, false, "Nǐ jiā yǒu jǐ gè rén?", "你家有几个人？", "Hỏi và đếm số lượng người trong gia đình.", 3),
+  JourneyNode("w3_n4", "Độ Tuổi Gia Đình", NodeIconType.GENERAL_LESSON, false, true, false, "Nǐ jǐ suì?", "你几岁？", "Hỏi tuổi người thân và giới thiệu năm nay bao nhiêu tuổi.", 3),
+  JourneyNode("w3_n5", "Ngôi Nhà Của Tôi", NodeIconType.GENERAL_LESSON, false, true, false, "Wǒ de jiā", "我的家", "Phòng khách, phòng ngủ, phòng bếp, nhà vệ sinh.", 3),
+  JourneyNode("w3_n6", "Ở Đâu Thế?", NodeIconType.GENERAL_LESSON, false, true, false, "Zài nǎlǐ?", "在哪里？", "Vị trí đồ vật: sách, bàn, ghế, trong phòng.", 3),
+  JourneyNode("w3_n7", "Miêu Tả Người Thân", NodeIconType.GENERAL_LESSON, false, true, false, "Míashù jiārén", "我的家人", "Tính từ miêu tả: cao, to, nhỏ, xinh đẹp, đáng yêu.", 3),
+  JourneyNode("w3_n8", "Gia Đình & Nhà Cửa", NodeIconType.GENERAL_LESSON, false, true, false, "Jiātíng yǔ jiā", "我的家", "Hội thoại tích hợp kết hợp gia đình và không gian sống.", 3),
+  JourneyNode("w3_n9", "Thử Thách Gia Đình", NodeIconType.BOSS_CHALLENGE, false, true, false, "Jiātíng tiǎozhàn", "我的家挑战", "Trùm World 3: Đấu trường thử thách gia đình và nhà cửa.", 3)
 )
 
 val initialWorld4Nodes = listOf(
-  JourneyNode("w4_n1", "Lớp Học & Môn Học", NodeIconType.GENERAL_LESSON, false, true, false, "Jiàoshì", "教室与学科", "Nói về trường lớp, môn học và thầy cô.", 4),
-  JourneyNode("w4_n2", "Kết Bạn", NodeIconType.GENERAL_LESSON, false, true, false, "Jiāo péngyǒu", "交朋友", "Gặp gỡ bạn bè và hẹn hò.", 4),
-  JourneyNode("w4_n3", "Ý Kiến & Cảm Xúc", NodeIconType.GENERAL_LESSON, false, true, false, "Xiǎngfǎ", "表达想法", "Chia sẻ điều bạn thích và không thích.", 4),
-  JourneyNode("w4_n4", "Trùm Trường Học", NodeIconType.BOSS_CHALLENGE, false, true, false, "Xiàoyuán tiǎozhàn", "校园挑战", "Dẫn dắt buổi thảo luận câu lạc bộ học sinh.", 4)
+  JourneyNode("w4_n1", "Trường Học", NodeIconType.GENERAL_LESSON, false, true, false, "Xuéxiào", "学校", "Khám phá trường học, đại học và phòng học.", 4),
+  JourneyNode("w4_n2", "Bạn Cùng Lớp", NodeIconType.GENERAL_LESSON, false, true, false, "Wǒ de tóngxué", "我的同学", "Nói về bạn học nam, bạn học nữ và người quen.", 4),
+  JourneyNode("w4_n3", "Thầy Cô & Học Sinh", NodeIconType.GENERAL_LESSON, false, true, false, "Lǎoshī hé xuésheng", "老师和学生", "Vai trò trong lớp: dạy học, học tập, vào lớp, tan lớp.", 4),
+  JourneyNode("w4_n4", "Tôi Học Tiếng Trung", NodeIconType.GENERAL_LESSON, false, true, false, "Wǒ xuéxí Zhōngwén", "我学习中文", "Luyện 4 kỹ năng ngôn ngữ: Nghe, Nói, Đọc, Viết.", 4),
+  JourneyNode("w4_n5", "Bạn Thích Môn Gì?", NodeIconType.GENERAL_LESSON, false, true, false, "Nǐ xǐhuan shénme kè?", "你喜欢什么课？", "Bày tỏ sở thích môn học: tiếng Trung, tiếng Anh, toán học.", 4),
+  JourneyNode("w4_n6", "Cùng Nhau Học Tập", NodeIconType.GENERAL_LESSON, false, true, false, "Yìqǐ xuéxí", "一起学习", "Tương tác xã hội: rủ bạn cùng học, hẹn gặp, mời bạn.", 4),
+  JourneyNode("w4_n7", "Bạn Ở Đâu Thế?", NodeIconType.GENERAL_LESSON, false, true, false, "Nǐ zài nǎr?", "你在哪儿？", "Vị trí trong trường: thư viện, nhà ăn, sân trường, lớp học.", 4),
+  JourneyNode("w4_n8", "Đời Sống Học Đường", NodeIconType.GENERAL_LESSON, false, true, false, "Wǒ de xuéxiào shēnghuó", "我的学校生活", "Hội thoại tích hợp miêu tả một ngày học tập sôi động.", 4),
+  JourneyNode("w4_n9", "Thử Thách Trường Học", NodeIconType.BOSS_CHALLENGE, false, true, false, "Xuéxiào tiǎozhàn", "学校挑战", "Trùm World 4: Đấu trường thử thách toàn diện đời sống học đường.", 4)
 )
 
 val initialWorld5Nodes = listOf(
-  JourneyNode("w5_n1", "Rau Củ & Trái Cây", NodeIconType.GENERAL_LESSON, false, true, false, "Shuǐguǒ", "水果蔬菜", "Khám phá nông sản chợ Bắc Kinh.", 5),
-  JourneyNode("w5_n2", "Mặc Cả & Giá Cả", NodeIconType.GENERAL_LESSON, false, true, false, "Duōshǎo qián", "多少钱", "Hỏi giá và trả giá khi mua sắm.", 5),
-  JourneyNode("w5_n3", "Thanh Toán Di Động", NodeIconType.GENERAL_LESSON, false, true, false, "Zhīfù", "扫码支付", "Sử dụng WeChat và Alipay mượt mà.", 5),
-  JourneyNode("w5_n4", "Trùm Chợ Búa", NodeIconType.BOSS_CHALLENGE, false, true, false, "Shìchǎng táojīn", "市场淘金", "Hoàn thành nhiệm vụ mua sắm tại chợ.", 5)
+  JourneyNode("w5_n1", "Chợ Bắc Kinh", NodeIconType.GENERAL_LESSON, false, true, false, "Běijīng shìchǎng", "北京市场", "Làm quen không gian chợ, cửa hàng, ông chủ, mua và bán.", 5),
+  JourneyNode("w5_n2", "Tôi Muốn Mua...", NodeIconType.GENERAL_LESSON, false, true, false, "Wǒ xiǎng mǎi...", "我想买...", "Bày tỏ nhu cầu mua sắm: nước, trà, hoa quả, táo, sách.", 5),
+  JourneyNode("w5_n3", "Bao Nhiêu Tiền?", NodeIconType.GENERAL_LESSON, false, true, false, "Duōshao qián?", "多少钱？", "Hỏi và nghe giá tiền: khối/tệ (块/元), đắt (贵), rẻ (便宜).", 5),
+  JourneyNode("w5_n4", "Tôi Lấy Cái Này", NodeIconType.GENERAL_LESSON, false, true, false, "Wǒ yào zhège", "我要这个", "Lựa chọn món hàng: cái này (这个), cái kia (那个), đưa cho (给).", 5),
+  JourneyNode("w5_n5", "Bao Nhiêu Cái?", NodeIconType.GENERAL_LESSON, false, true, false, "Duōshao gè?", "多少个？", "Lượng từ và số lượng: 1 cái, 2 cái, 3 cái, 5 cái quả táo.", 5),
+  JourneyNode("w5_n6", "Đắt Quá Rồi", NodeIconType.GENERAL_LESSON, false, true, false, "Tài guì le", "太贵了", "Phản ứng giá cả: quá đắt (太贵了), rẻ một chút (便宜一点儿).", 5),
+  JourneyNode("w5_n7", "Bớt Một Chút Đi", NodeIconType.GENERAL_LESSON, false, true, false, "Piányi yìdiǎnr", "便宜一点儿", "Thương lượng giá cả: có thể bớt không, 10 đồng được không.", 5),
+  JourneyNode("w5_n8", "Mua Sắm Tại Chợ", NodeIconType.GENERAL_LESSON, false, true, false, "Shìchǎng gòuwù", "市场购物", "Mô phỏng thực tế mua sắm tại quầy hoa quả, đồ uống.", 5),
+  JourneyNode("w5_n9", "Thử Thách Chợ Bắc Kinh", NodeIconType.BOSS_CHALLENGE, false, true, false, "Běijīng shìchǎng tiǎozhàn", "北京市场挑战", "Trùm World 5: Nhiệm vụ hoàn thành danh sách mua sắm thực tế.", 5)
 )
 
 val initialWorld6Nodes = listOf(

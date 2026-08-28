@@ -206,8 +206,23 @@ class LearnerRepository(context: Context) {
     return prefs.getBoolean("lesson_comp_${nodeId}_${lessonId}", false)
   }
 
+  private fun findCurriculumCourse(nodeId: String, learnerName: String = ""): NodeCourseData? {
+    return when {
+      nodeId.startsWith("w1_") -> World1Curriculum.getNodeCourse(nodeId, learnerName)
+      nodeId.startsWith("w2_") -> World2Curriculum.getNodeCourse(nodeId, learnerName)
+      nodeId.startsWith("w3_") -> World3Curriculum.getNodeCourse(nodeId, learnerName)
+      nodeId.startsWith("w4_") -> World4Curriculum.getNodeCourse(nodeId, learnerName)
+      nodeId.startsWith("w5_") -> World5Curriculum.getNodeCourse(nodeId, learnerName)
+      else -> World1Curriculum.getNodeCourse(nodeId, learnerName)
+        ?: World2Curriculum.getNodeCourse(nodeId, learnerName)
+        ?: World3Curriculum.getNodeCourse(nodeId, learnerName)
+        ?: World4Curriculum.getNodeCourse(nodeId, learnerName)
+        ?: World5Curriculum.getNodeCourse(nodeId, learnerName)
+    }
+  }
+
   fun getCompletedMicroLessonsCount(nodeId: String): Int {
-    val course = World1Curriculum.getNodeCourse(nodeId) ?: return 0
+    val course = findCurriculumCourse(nodeId) ?: return 0
     return course.microLessons.count { isMicroLessonCompleted(nodeId, it.id) }
   }
 
@@ -253,7 +268,7 @@ class LearnerRepository(context: Context) {
       .apply()
 
     // Check if all lessons in this node are completed
-    val course = World1Curriculum.getNodeCourse(nodeId)
+    val course = findCurriculumCourse(nodeId)
     if (course != null) {
       val allCompleted = course.microLessons.all { isMicroLessonCompleted(nodeId, it.id) }
       if (allCompleted) {
@@ -273,16 +288,24 @@ class LearnerRepository(context: Context) {
     val currentState = _state.value
     val currentCompletedCount = prefs.getInt("completed_nodes_count", 0)
 
-    // Calculate which index this node corresponds to in World 1
-    val nodeCourse = World1Curriculum.world1NodeCourses.find { it.nodeId == nodeId }
-    val nodeOrder = nodeCourse?.order ?: 1
+    // Calculate global index for this node across all worlds
+    var targetGlobalIndex = 1
+    var accumulatedNodes = 0
+    for (world in currentState.worlds) {
+      val foundIdx = world.nodes.indexOfFirst { it.id == nodeId }
+      if (foundIdx >= 0) {
+        targetGlobalIndex = accumulatedNodes + foundIdx + 1
+        break
+      }
+      accumulatedNodes += world.nodes.size
+    }
 
-    val newCompletedCount = maxOf(currentCompletedCount, nodeOrder)
+    val newCompletedCount = maxOf(currentCompletedCount, targetGlobalIndex)
     val newXp = currentState.xp + xpBonus
 
     val unlockFirstWords = true
-    val unlockConversation = nodeOrder >= 8
-    val unlockExplorer = nodeOrder >= 9
+    val unlockConversation = targetGlobalIndex >= 8
+    val unlockExplorer = targetGlobalIndex >= 9
 
     prefs.edit()
       .putInt("learner_xp", newXp)
@@ -315,7 +338,7 @@ class LearnerRepository(context: Context) {
   }
 
   fun getNodeCourse(nodeId: String): NodeCourseData? {
-    val course = World1Curriculum.getNodeCourse(nodeId, _state.value.name) ?: return null
+    val course = findCurriculumCourse(nodeId, _state.value.name) ?: return null
     val completedCount = getCompletedMicroLessonsCount(nodeId)
     val isCompleted = completedCount >= course.microLessons.size
     val masteryPct = if (course.microLessons.isNotEmpty()) (completedCount * 100) / course.microLessons.size else 0

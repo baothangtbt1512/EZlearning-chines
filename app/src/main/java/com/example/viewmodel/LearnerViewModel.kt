@@ -134,7 +134,7 @@ class LearnerViewModel(application: Application) : AndroidViewModel(application)
   }
 
   fun startLearningSession(nodeId: String, lessonIndex: Int = 0) {
-    val course = repository.getNodeCourse(nodeId) ?: World1Curriculum.getNodeCourse(nodeId)
+    val course = repository.getNodeCourse(nodeId)
     _activeCourse.value = course
     _activeLessonIndex.value = lessonIndex
     _selectedNode.value = null
@@ -210,11 +210,12 @@ class LearnerViewModel(application: Application) : AndroidViewModel(application)
   }
 
   fun startNextNode(currentNodeId: String) {
-    val currentCourse = World1Curriculum.world1NodeCourses.find { it.nodeId == currentNodeId }
-    val nextOrder = (currentCourse?.order ?: 1) + 1
-    val nextCourse = World1Curriculum.world1NodeCourses.find { it.order == nextOrder }
-    if (nextCourse != null) {
-      startLearningSession(nextCourse.nodeId, 0)
+    val activeWorld = learnerState.value.worlds.find { it.id == learnerState.value.currentWorldId }
+      ?: learnerState.value.worlds.first()
+    val nodeIndex = activeWorld.nodes.indexOfFirst { it.id == currentNodeId }
+    if (nodeIndex >= 0 && nodeIndex + 1 < activeWorld.nodes.size) {
+      val nextNode = activeWorld.nodes[nodeIndex + 1]
+      startLearningSession(nextNode.id, 0)
     } else {
       navigateBack()
     }
@@ -223,7 +224,7 @@ class LearnerViewModel(application: Application) : AndroidViewModel(application)
   fun recordEvidence(lessonId: String, activityId: String, skill: SkillType, correct: Boolean, score: Double) {
     val course = _activeCourse.value ?: return
     repository.recordEvidence(
-      worldId = "world_1",
+      worldId = learnerState.value.currentWorldId,
       nodeId = course.nodeId,
       lessonId = lessonId,
       activityId = activityId,

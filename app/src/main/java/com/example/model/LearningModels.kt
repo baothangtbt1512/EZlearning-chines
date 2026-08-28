@@ -129,6 +129,37 @@ data class SpeakingAttempt(
   val overallScore: Double
 )
 
+data class SkillRequirement(
+  val skill: SkillType,
+  val minimumScore: Double = 0.65
+)
+
+data class WorldUnlockCondition(
+  val worldId: String,
+  val requirements: List<SkillRequirement> = emptyList()
+)
+
+data class Quest(
+  val id: String,
+  val worldId: String,
+  val title: String,
+  val description: String,
+  val targetSkills: List<SkillType>,
+  val nodeIds: List<String> = emptyList(),
+  val activityIds: List<String> = emptyList(),
+  val xpReward: Int = 50,
+  val isCompleted: Boolean = false
+)
+
+data class WorldCompletionData(
+  val worldId: String,
+  val titleChinese: String,
+  val titleEnglish: String,
+  val achievementsUnlocked: List<String>,
+  val masteredSkills: List<String>,
+  val xpReward: Int = 100
+)
+
 data class LearningSession(
   val sessionId: String,
   val learnerId: String = "",
