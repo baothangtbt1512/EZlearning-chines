@@ -28,6 +28,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.VolumeUp
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
@@ -121,6 +122,7 @@ fun LearningSessionScreen(
   // Feedback states
   var isAnswerSubmitted by remember(currentActivity.id) { mutableStateOf(false) }
   var isCorrectAnswer by remember(currentActivity.id) { mutableStateOf(false) }
+  var wrongAttemptsCount by remember(currentActivity.id) { mutableIntStateOf(0) }
   var showLessonSuccessDialog by remember { mutableStateOf(false) }
   var showCourseMasteredDialog by remember { mutableStateOf(false) }
 
@@ -141,6 +143,9 @@ fun LearningSessionScreen(
       isAnswerSubmitted = true
       if (speechEvaluationResult.isPass) {
         onRecordEvidence(currentLesson.id, currentActivity.id, currentActivity.skill, true, speechEvaluationResult.score)
+      } else {
+        wrongAttemptsCount++
+        onRecordEvidence(currentLesson.id, currentActivity.id, currentActivity.skill, false, speechEvaluationResult.score)
       }
     }
   }
@@ -388,26 +393,53 @@ fun LearningSessionScreen(
             Column(modifier = Modifier.padding(bottom = 10.dp)) {
               Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
-                  imageVector = if (isCorrectAnswer) Icons.Filled.CheckCircle else Icons.Filled.Warning,
+                  imageVector = when {
+                    isCorrectAnswer -> Icons.Filled.CheckCircle
+                    wrongAttemptsCount >= 3 -> Icons.Filled.Info
+                    else -> Icons.Filled.Warning
+                  },
                   contentDescription = null,
-                  tint = if (isCorrectAnswer) Color(0xFF2E7D32) else Color(0xFFC62828),
+                  tint = when {
+                    isCorrectAnswer -> Color(0xFF2E7D32)
+                    wrongAttemptsCount >= 3 -> Color(0xFFE65100)
+                    else -> Color(0xFFC62828)
+                  },
                   modifier = Modifier.size(22.dp)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                  text = if (isCorrectAnswer) "Chính xác! Xuất sắc (+5 XP)" else "Chưa chính xác. Thử lại nhé!",
+                  text = when {
+                    isCorrectAnswer -> "Chính xác! Xuất sắc (+5 XP)"
+                    wrongAttemptsCount >= 3 -> "Đã sai 3 lần! Đáp án đúng: ${currentActivity.correctAnswer}"
+                    else -> "Chưa chính xác (${wrongAttemptsCount}/3 lần thử). Thử lại nhé!"
+                  },
                   fontSize = 15.sp,
                   fontWeight = FontWeight.Bold,
-                  color = if (isCorrectAnswer) Color(0xFF2E7D32) else Color(0xFFC62828)
+                  color = when {
+                    isCorrectAnswer -> Color(0xFF2E7D32)
+                    wrongAttemptsCount >= 3 -> Color(0xFFE65100)
+                    else -> Color(0xFFC62828)
+                  }
                 )
               }
-              if (!isCorrectAnswer && currentActivity.explanation.isNotEmpty()) {
-                Spacer(modifier = Modifier.height(2.dp))
-                Text(
-                  text = currentActivity.explanation,
-                  fontSize = 12.sp,
-                  color = DarkText
-                )
+              if (!isCorrectAnswer) {
+                if (wrongAttemptsCount >= 3) {
+                  Spacer(modifier = Modifier.height(2.dp))
+                  Text(
+                    text = "Hệ thống sẽ chuyển tiếp sang câu tiếp theo để duy trì nhịp học.",
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = Color(0xFF795548)
+                  )
+                }
+                if (currentActivity.explanation.isNotEmpty()) {
+                  Spacer(modifier = Modifier.height(2.dp))
+                  Text(
+                    text = currentActivity.explanation,
+                    fontSize = 12.sp,
+                    color = DarkText
+                  )
+                }
               }
             }
           }
@@ -422,6 +454,7 @@ fun LearningSessionScreen(
           val buttonBgColor = when {
             !isAnswerSubmitted -> Color(0xFF00796B)
             isCorrectAnswer -> Color(0xFF2E7D32)
+            wrongAttemptsCount >= 3 -> Color(0xFFE65100)
             else -> Color(0xFFD32F2F)
           }
 
@@ -436,10 +469,13 @@ fun LearningSessionScreen(
                 }
                 isCorrectAnswer = isCorrect
                 isAnswerSubmitted = true
+                if (!isCorrect) {
+                  wrongAttemptsCount++
+                }
                 onRecordEvidence(currentLesson.id, currentActivity.id, currentActivity.skill, isCorrect, if (isCorrect) 1.0 else 0.0)
               } else {
-                // Move to next or retry
-                if (isCorrectAnswer) {
+                // Move to next if correct OR if failed 3 times
+                if (isCorrectAnswer || wrongAttemptsCount >= 3) {
                   handleAdvance()
                 } else {
                   // Reset for retry
@@ -472,7 +508,8 @@ fun LearningSessionScreen(
               text = when {
                 !isAnswerSubmitted -> "Kiểm tra đáp án"
                 isCorrectAnswer -> "Tiếp tục →"
-                else -> "Thử lại ↺"
+                wrongAttemptsCount >= 3 -> "Bỏ qua & Tiếp tục →"
+                else -> "Thử lại (${wrongAttemptsCount}/3) ↺"
               },
               fontSize = 16.sp,
               fontWeight = FontWeight.Bold,

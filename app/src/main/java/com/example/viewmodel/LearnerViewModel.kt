@@ -7,7 +7,9 @@ import com.example.data.World1Curriculum
 import com.example.model.JourneyNode
 import com.example.model.LearnerState
 import com.example.model.NodeCourseData
+import com.example.model.SavedReviewCard
 import com.example.model.SkillType
+import com.example.ui.components.extractLessonReviewData
 import com.example.util.ChineseSpeechEvaluator
 import com.example.util.ChineseTtsHelper
 import com.example.util.SpeechEvaluationResult
@@ -202,10 +204,33 @@ class LearnerViewModel(application: Application) : AndroidViewModel(application)
 
   fun completeMicroLesson(lessonId: String, xp: Int) {
     val course = _activeCourse.value ?: return
+    val lesson = course.microLessons.find { it.id == lessonId }
+    if (lesson != null) {
+      val (extracted, _) = extractLessonReviewData(lesson, course)
+      val cards = extracted.map { item ->
+        SavedReviewCard(
+          lessonId = lesson.id,
+          lessonTitle = lesson.title,
+          worldId = learnerState.value.currentWorldId,
+          hanzi = item.hanzi,
+          pinyin = item.pinyin,
+          vietnameseMeaning = item.vietnameseMeaning,
+          usageNote = item.usageNote,
+          exampleSentence = item.exampleSentence,
+          examplePinyin = item.examplePinyin,
+          exampleTranslation = item.exampleTranslation
+        )
+      }
+      repository.saveReviewCards(cards)
+    }
     repository.completeMicroLesson(course.nodeId, lessonId, xp)
     // Refresh course
     _activeCourse.value = repository.getNodeCourse(course.nodeId)
     _feedbackToast.value = "+$xp XP! Tuyệt vời lắm!"
+  }
+
+  fun saveReviewCards(cards: List<SavedReviewCard>) {
+    repository.saveReviewCards(cards)
   }
 
   fun startNextNode(currentNodeId: String) {

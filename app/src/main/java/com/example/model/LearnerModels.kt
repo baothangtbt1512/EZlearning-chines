@@ -63,6 +63,21 @@ data class AchievementItem(
   val isUnlocked: Boolean = false
 )
 
+data class SavedReviewCard(
+  val id: String = "",
+  val lessonId: String = "",
+  val lessonTitle: String = "",
+  val worldId: String = "",
+  val hanzi: String,
+  val pinyin: String,
+  val vietnameseMeaning: String,
+  val usageNote: String = "",
+  val exampleSentence: String = "",
+  val examplePinyin: String = "",
+  val exampleTranslation: String = "",
+  val savedAtMillis: Long = System.currentTimeMillis()
+)
+
 data class LearnerState(
   val name: String = "",
   val country: String = "Việt Nam",
@@ -85,6 +100,7 @@ data class LearnerState(
   val worlds: List<WorldData> = defaultWorldsData,
   val journeyNodes: List<JourneyNode> = defaultWorldsData.first().nodes,
   val achievements: List<AchievementItem> = initialAchievements,
+  val savedReviewCards: List<SavedReviewCard> = emptyList(),
   val isOnboardingCompleted: Boolean = false,
   val avatar: String = "dudu"
 )

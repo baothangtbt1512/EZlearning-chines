@@ -134,7 +134,8 @@ fun LearningChineseApp(viewModel: LearnerViewModel) {
           onUpdateProfile = { name, avatar ->
             viewModel.updateLearnerName(name)
             viewModel.updateLearnerAvatar(avatar)
-          }
+          },
+          onPlayAudio = { viewModel.playAudio(it) }
         )
 
         ScreenRoute.SETTINGS -> SettingsScreen(

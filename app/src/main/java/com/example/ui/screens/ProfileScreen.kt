@@ -61,11 +61,11 @@ import com.example.ui.components.EditNameDialog
 import com.example.ui.components.GreatWallHeroCanvas
 import com.example.ui.components.LearningSkillsSection
 import com.example.ui.components.ResetProgressCard
+import com.example.ui.components.SavedReviewCardsSection
 import com.example.ui.components.SettingsInfoDialog
 import com.example.ui.components.SettingsRow
 import com.example.ui.components.SettingsSectionCard
 import androidx.compose.material.icons.filled.Edit
-import com.example.ui.components.EditNameDialog
 import com.example.ui.theme.DarkJade
 import com.example.ui.theme.DarkText
 import com.example.ui.theme.PrimaryJade
@@ -82,6 +82,7 @@ fun ProfileScreen(
   onToggleReminders: (Boolean) -> Unit,
   onUpdateName: (String) -> Unit = {},
   onUpdateProfile: (name: String, avatar: String) -> Unit = { n, _ -> onUpdateName(n) },
+  onPlayAudio: (String) -> Unit = {},
   modifier: Modifier = Modifier
 ) {
   val scrollState = rememberScrollState()
@@ -347,7 +348,13 @@ fun ProfileScreen(
           skills = state.skills
         )
 
-        // 2. Achievements Section
+        // 2. Saved Review Cards Section (Thẻ lưu ý sau mỗi lesson)
+        SavedReviewCardsSection(
+          cards = state.savedReviewCards,
+          onPlayAudio = onPlayAudio
+        )
+
+        // 3. Achievements Section
         AchievementsSection(
           achievements = state.achievements,
           onViewAllClick = {

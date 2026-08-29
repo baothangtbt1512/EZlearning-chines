@@ -2,6 +2,7 @@ package com.example.data
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
 import com.example.model.AchievementItem
 import com.example.model.ItemSkillMastery
 import com.example.model.JourneyNode
@@ -9,6 +10,7 @@ import com.example.model.LearnerState
 import com.example.model.LearningEvidence
 import com.example.model.NodeCourseData
 import com.example.model.ReviewQueueItem
+import com.example.model.SavedReviewCard
 import com.example.model.SkillType
 import com.example.model.WorldData
 import com.example.model.defaultWorldsData
@@ -16,6 +18,8 @@ import com.example.model.initialAchievements
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import org.json.JSONArray
+import org.json.JSONObject
 import java.util.UUID
 
 class LearnerRepository(context: Context) {
@@ -23,6 +27,57 @@ class LearnerRepository(context: Context) {
 
   private val _state = MutableStateFlow(loadState())
   val state: StateFlow<LearnerState> = _state.asStateFlow()
+
+  private fun loadReviewCardsFromPrefs(): List<SavedReviewCard> {
+    val jsonStr = prefs.getString("saved_review_cards_json", null) ?: return emptyList()
+    val list = mutableListOf<SavedReviewCard>()
+    try {
+      val jsonArray = JSONArray(jsonStr)
+      for (i in 0 until jsonArray.length()) {
+        val obj = jsonArray.getJSONObject(i)
+        list.add(
+          SavedReviewCard(
+            id = obj.optString("id", UUID.randomUUID().toString()),
+            lessonId = obj.optString("lessonId", ""),
+            lessonTitle = obj.optString("lessonTitle", ""),
+            worldId = obj.optString("worldId", ""),
+            hanzi = obj.optString("hanzi", ""),
+            pinyin = obj.optString("pinyin", ""),
+            vietnameseMeaning = obj.optString("vietnameseMeaning", ""),
+            usageNote = obj.optString("usageNote", ""),
+            exampleSentence = obj.optString("exampleSentence", ""),
+            examplePinyin = obj.optString("examplePinyin", ""),
+            exampleTranslation = obj.optString("exampleTranslation", ""),
+            savedAtMillis = obj.optLong("savedAtMillis", System.currentTimeMillis())
+          )
+        )
+      }
+    } catch (e: Exception) {
+      Log.e("LearnerRepository", "Error parsing saved review cards: ${e.message}")
+    }
+    return list
+  }
+
+  private fun saveReviewCardsToPrefs(cards: List<SavedReviewCard>) {
+    val jsonArray = JSONArray()
+    for (card in cards) {
+      val obj = JSONObject()
+      obj.put("id", card.id)
+      obj.put("lessonId", card.lessonId)
+      obj.put("lessonTitle", card.lessonTitle)
+      obj.put("worldId", card.worldId)
+      obj.put("hanzi", card.hanzi)
+      obj.put("pinyin", card.pinyin)
+      obj.put("vietnameseMeaning", card.vietnameseMeaning)
+      obj.put("usageNote", card.usageNote)
+      obj.put("exampleSentence", card.exampleSentence)
+      obj.put("examplePinyin", card.examplePinyin)
+      obj.put("exampleTranslation", card.exampleTranslation)
+      obj.put("savedAtMillis", card.savedAtMillis)
+      jsonArray.put(obj)
+    }
+    prefs.edit().putString("saved_review_cards_json", jsonArray.toString()).apply()
+  }
 
   private fun loadState(): LearnerState {
     val name = prefs.getString("learner_name", "") ?: ""
@@ -55,6 +110,8 @@ class LearnerRepository(context: Context) {
       ach.copy(isUnlocked = unlocked)
     }
 
+    val savedReviewCards = loadReviewCardsFromPrefs()
+
     return LearnerState(
       name = name,
       avatar = avatar,
@@ -72,6 +129,7 @@ class LearnerRepository(context: Context) {
       worlds = updatedWorlds,
       journeyNodes = activeWorld.nodes,
       achievements = achievements,
+      savedReviewCards = savedReviewCards,
       isOnboardingCompleted = onboardingCompleted
     )
   }
@@ -151,6 +209,21 @@ class LearnerRepository(context: Context) {
     _state.value = _state.value.copy(
       name = trimmed
     )
+  }
+
+  fun saveReviewCards(newCards: List<SavedReviewCard>) {
+    if (newCards.isEmpty()) return
+    val current = loadReviewCardsFromPrefs().toMutableList()
+    for (newCard in newCards) {
+      val existingIdx = current.indexOfFirst { it.hanzi == newCard.hanzi }
+      if (existingIdx >= 0) {
+        current[existingIdx] = newCard
+      } else {
+        current.add(0, newCard)
+      }
+    }
+    saveReviewCardsToPrefs(current)
+    _state.value = _state.value.copy(savedReviewCards = current)
   }
 
   fun resetProgress() {

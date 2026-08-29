@@ -1,5 +1,6 @@
 package com.example.ui.components
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -18,16 +19,28 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.AutoAwesome
+import androidx.compose.material.icons.filled.Bookmarks
 import androidx.compose.material.icons.filled.ChatBubble
 import androidx.compose.material.icons.filled.GraphicEq
 import androidx.compose.material.icons.filled.Headphones
+import androidx.compose.material.icons.filled.Lightbulb
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.MenuBook
 import androidx.compose.material.icons.filled.Mic
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.VolumeUp
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -43,6 +56,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.model.AchievementItem
+import com.example.model.SavedReviewCard
 import com.example.model.SkillType
 import com.example.ui.theme.DarkJade
 import com.example.ui.theme.DarkText
@@ -403,5 +417,348 @@ fun MapScrollMiniIcon(modifier: Modifier = Modifier) {
     // Map continent outlines
     drawLine(color = Color(0xFF6B8E7D), start = Offset(w * 0.35f, h * 0.45f), end = Offset(w * 0.55f, h * 0.40f), strokeWidth = 3f)
     drawLine(color = Color(0xFF6B8E7D), start = Offset(w * 0.55f, h * 0.40f), end = Offset(w * 0.65f, h * 0.58f), strokeWidth = 3f)
+  }
+}
+
+@Composable
+fun SavedReviewCardsSection(
+  cards: List<SavedReviewCard>,
+  onPlayAudio: (String) -> Unit,
+  modifier: Modifier = Modifier
+) {
+  var searchQuery by remember { mutableStateOf("") }
+  var isExpanded by remember { mutableStateOf(false) }
+
+  val filteredCards = remember(cards, searchQuery) {
+    if (searchQuery.isBlank()) {
+      cards
+    } else {
+      cards.filter {
+        it.hanzi.contains(searchQuery, ignoreCase = true) ||
+          it.pinyin.contains(searchQuery, ignoreCase = true) ||
+          it.vietnameseMeaning.contains(searchQuery, ignoreCase = true) ||
+          it.lessonTitle.contains(searchQuery, ignoreCase = true)
+      }
+    }
+  }
+
+  val displayedCards = if (isExpanded) filteredCards else filteredCards.take(4)
+
+  Box(
+    modifier = modifier
+      .fillMaxWidth()
+      .shadow(elevation = 3.dp, shape = RoundedCornerShape(20.dp), spotColor = Color(0x15004D40))
+      .clip(RoundedCornerShape(20.dp))
+      .background(Color.White)
+      .border(1.5.dp, Color(0xFFDCD6CA), RoundedCornerShape(20.dp))
+      .padding(18.dp)
+      .testTag("saved_review_cards_section")
+  ) {
+    Column {
+      // Section Header
+      Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+      ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+          Box(
+            modifier = Modifier
+              .size(34.dp)
+              .clip(CircleShape)
+              .background(Color(0xFFE0F2F1)),
+            contentAlignment = Alignment.Center
+          ) {
+            Icon(
+              imageVector = Icons.Filled.Bookmarks,
+              contentDescription = null,
+              tint = Color(0xFF00796B),
+              modifier = Modifier.size(18.dp)
+            )
+          }
+
+          Spacer(modifier = Modifier.width(10.dp))
+
+          Column {
+            Text(
+              text = "SỔ TAY LƯU Ý & ÔN TẬP",
+              fontSize = 12.sp,
+              fontWeight = FontWeight.ExtraBold,
+              color = Color(0xFF004D40),
+              letterSpacing = 1.sp
+            )
+            Text(
+              text = "Thẻ ghi nhớ tích lũy sau mỗi bài học",
+              fontSize = 11.sp,
+              fontWeight = FontWeight.Medium,
+              color = SecondaryText
+            )
+          }
+        }
+
+        // Count Badge
+        Box(
+          modifier = Modifier
+            .clip(RoundedCornerShape(12.dp))
+            .background(Color(0xFFE8F5E9))
+            .border(1.dp, Color(0xFFA5D6A7), RoundedCornerShape(12.dp))
+            .padding(horizontal = 8.dp, vertical = 3.dp)
+        ) {
+          Text(
+            text = "${cards.size} thẻ",
+            fontSize = 11.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color(0xFF2E7D32)
+          )
+        }
+      }
+
+      Spacer(modifier = Modifier.height(14.dp))
+
+      if (cards.isEmpty()) {
+        // Empty state
+        Box(
+          modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(14.dp))
+            .background(Color(0xFFF9F6EE))
+            .border(1.dp, Color(0xFFE8DFC8), RoundedCornerShape(14.dp))
+            .padding(16.dp),
+          contentAlignment = Alignment.Center
+        ) {
+          Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Icon(
+              imageVector = Icons.Filled.MenuBook,
+              contentDescription = null,
+              tint = Color(0xFF8A8275),
+              modifier = Modifier.size(32.dp)
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+              text = "Chưa có thẻ ghi nhớ nào",
+              fontSize = 14.sp,
+              fontWeight = FontWeight.Bold,
+              color = DarkText
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+              text = "Hoàn thành các bài học trên Bản đồ để tự động lưu các thẻ Chữ Hán, Pinyin & Ghi chú vào đây!",
+              fontSize = 12.sp,
+              color = SecondaryText,
+              textAlign = androidx.compose.ui.text.style.TextAlign.Center
+            )
+          }
+        }
+      } else {
+        // Search field if more than 3 cards
+        if (cards.size > 3) {
+          OutlinedTextField(
+            value = searchQuery,
+            onValueChange = { searchQuery = it },
+            placeholder = { Text("Tìm kiếm Chữ Hán, Pinyin hoặc nghĩa...", fontSize = 12.sp) },
+            leadingIcon = {
+              Icon(
+                imageVector = Icons.Filled.Search,
+                contentDescription = "Search",
+                tint = Color(0xFF00796B),
+                modifier = Modifier.size(18.dp)
+              )
+            },
+            singleLine = true,
+            modifier = Modifier
+              .fillMaxWidth()
+              .height(50.dp)
+              .padding(bottom = 4.dp),
+            shape = RoundedCornerShape(12.dp),
+            colors = OutlinedTextFieldDefaults.colors(
+              focusedBorderColor = PrimaryJade,
+              unfocusedBorderColor = SoftBorder,
+              focusedContainerColor = Color(0xFFFAFAFA),
+              unfocusedContainerColor = Color(0xFFFAFAFA)
+            )
+          )
+          Spacer(modifier = Modifier.height(10.dp))
+        }
+
+        // List of review cards
+        Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+          displayedCards.forEach { card ->
+            SavedReviewCardItem(
+              card = card,
+              onPlayAudio = onPlayAudio
+            )
+          }
+        }
+
+        // Toggle Expand / Collapse
+        if (filteredCards.size > 4) {
+          Spacer(modifier = Modifier.height(10.dp))
+          Box(
+            modifier = Modifier
+              .fillMaxWidth()
+              .clip(RoundedCornerShape(10.dp))
+              .background(Color(0xFFF0FDF4))
+              .border(1.dp, Color(0xFFBBEFCE), RoundedCornerShape(10.dp))
+              .clickable { isExpanded = !isExpanded }
+              .padding(vertical = 8.dp),
+            contentAlignment = Alignment.Center
+          ) {
+            Text(
+              text = if (isExpanded) "Thu gọn ▲" else "Xem tất cả (${filteredCards.size} thẻ) ▼",
+              fontSize = 12.sp,
+              fontWeight = FontWeight.Bold,
+              color = PrimaryJade
+            )
+          }
+        }
+      }
+    }
+  }
+}
+
+@Composable
+fun SavedReviewCardItem(
+  card: SavedReviewCard,
+  onPlayAudio: (String) -> Unit,
+  modifier: Modifier = Modifier
+) {
+  Box(
+    modifier = modifier
+      .fillMaxWidth()
+      .clip(RoundedCornerShape(14.dp))
+      .background(Color(0xFFFCFAF7))
+      .border(1.dp, Color(0xFFE6DFD3), RoundedCornerShape(14.dp))
+      .padding(12.dp)
+  ) {
+    Column {
+      Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+      ) {
+        // Left: Hanzi + Pinyin + Vietnamese Meaning
+        Row(
+          verticalAlignment = Alignment.CenterVertically,
+          modifier = Modifier.weight(1f)
+        ) {
+          // Hanzi badge
+          Box(
+            modifier = Modifier
+              .size(46.dp)
+              .clip(RoundedCornerShape(10.dp))
+              .background(Color(0xFFE0F2F1))
+              .border(1.dp, Color(0xFF80CBC4), RoundedCornerShape(10.dp)),
+            contentAlignment = Alignment.Center
+          ) {
+            Text(
+              text = card.hanzi,
+              fontSize = 20.sp,
+              fontWeight = FontWeight.ExtraBold,
+              color = Color(0xFF004D40)
+            )
+          }
+
+          Spacer(modifier = Modifier.width(12.dp))
+
+          Column {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+              Text(
+                text = card.pinyin,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF00796B)
+              )
+              if (card.lessonTitle.isNotBlank()) {
+                Spacer(modifier = Modifier.width(6.dp))
+                Box(
+                  modifier = Modifier
+                    .clip(RoundedCornerShape(6.dp))
+                    .background(Color(0xFFF1F5F9))
+                    .padding(horizontal = 6.dp, vertical = 1.dp)
+                ) {
+                  Text(
+                    text = card.lessonTitle,
+                    fontSize = 10.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = SecondaryText,
+                    maxLines = 1
+                  )
+                }
+              }
+            }
+            Spacer(modifier = Modifier.height(2.dp))
+            Text(
+              text = card.vietnameseMeaning,
+              fontSize = 13.sp,
+              fontWeight = FontWeight.SemiBold,
+              color = DarkText
+            )
+          }
+        }
+
+        // Right: Audio speaker button
+        IconButton(
+          onClick = { onPlayAudio(card.hanzi) },
+          modifier = Modifier
+            .size(36.dp)
+            .clip(CircleShape)
+            .background(Color(0xFFE0F2F1))
+        ) {
+          Icon(
+            imageVector = Icons.Filled.VolumeUp,
+            contentDescription = "Phát âm ${card.hanzi}",
+            tint = Color(0xFF00796B),
+            modifier = Modifier.size(18.dp)
+          )
+        }
+      }
+
+      // Usage note if available
+      if (card.usageNote.isNotBlank()) {
+        Spacer(modifier = Modifier.height(8.dp))
+        Box(
+          modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(8.dp))
+            .background(Color(0xFFFFFBEB))
+            .border(1.dp, Color(0xFFFDE68A), RoundedCornerShape(8.dp))
+            .padding(horizontal = 8.dp, vertical = 4.dp)
+        ) {
+          Row(verticalAlignment = Alignment.Top) {
+            Icon(
+              imageVector = Icons.Filled.Lightbulb,
+              contentDescription = null,
+              tint = Color(0xFFD97706),
+              modifier = Modifier.size(14.dp).padding(top = 1.dp)
+            )
+            Spacer(modifier = Modifier.width(6.dp))
+            Text(
+              text = card.usageNote,
+              fontSize = 11.sp,
+              fontWeight = FontWeight.Medium,
+              color = Color(0xFF92400E),
+              lineHeight = 15.sp
+            )
+          }
+        }
+      }
+
+      // Example sentence if available
+      if (card.exampleSentence.isNotBlank()) {
+        Spacer(modifier = Modifier.height(6.dp))
+        Row(
+          modifier = Modifier.fillMaxWidth(),
+          verticalAlignment = Alignment.CenterVertically
+        ) {
+          Text(
+            text = "Ví dụ: ${card.exampleSentence} (${card.examplePinyin})",
+            fontSize = 11.sp,
+            fontWeight = FontWeight.Medium,
+            color = Color(0xFF475569),
+            modifier = Modifier.weight(1f)
+          )
+        }
+      }
+    }
   }
 }

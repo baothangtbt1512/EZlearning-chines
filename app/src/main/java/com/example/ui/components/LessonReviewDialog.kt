@@ -291,39 +291,65 @@ fun LessonReviewDialog(
               colors = CardDefaults.cardColors(containerColor = JadeContainer),
               modifier = Modifier.fillMaxWidth()
             ) {
-              Row(
-                modifier = Modifier
-                  .fillMaxWidth()
-                  .padding(horizontal = 16.dp, vertical = 12.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
+              Column(
+                modifier = Modifier.fillMaxWidth()
               ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                  Icon(
-                    imageVector = Icons.Filled.AutoAwesome,
-                    contentDescription = null,
-                    tint = DarkJade,
-                    modifier = Modifier.size(22.dp)
-                  )
-                  Spacer(modifier = Modifier.width(8.dp))
-                  Text(
-                    text = "Điểm thưởng nhận được:",
-                    fontSize = 13.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = DarkJade
-                  )
-                }
-                Box(
+                Row(
                   modifier = Modifier
-                    .clip(RoundedCornerShape(20.dp))
-                    .background(PrimaryJade)
-                    .padding(horizontal = 12.dp, vertical = 4.dp)
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                  verticalAlignment = Alignment.CenterVertically,
+                  horizontalArrangement = Arrangement.SpaceBetween
                 ) {
+                  Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                      imageVector = Icons.Filled.AutoAwesome,
+                      contentDescription = null,
+                      tint = DarkJade,
+                      modifier = Modifier.size(22.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                      text = "Điểm thưởng nhận được:",
+                      fontSize = 13.sp,
+                      fontWeight = FontWeight.SemiBold,
+                      color = DarkJade
+                    )
+                  }
+                  Box(
+                    modifier = Modifier
+                      .clip(RoundedCornerShape(20.dp))
+                      .background(PrimaryJade)
+                      .padding(horizontal = 12.dp, vertical = 4.dp)
+                  ) {
+                    Text(
+                      text = "+$earnedXp XP",
+                      fontSize = 14.sp,
+                      fontWeight = FontWeight.Bold,
+                      color = Color.White
+                    )
+                  }
+                }
+
+                Row(
+                  modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color(0xFFE8F5E9))
+                    .padding(horizontal = 14.dp, vertical = 6.dp),
+                  verticalAlignment = Alignment.CenterVertically
+                ) {
+                  Icon(
+                    imageVector = Icons.Filled.CheckCircle,
+                    contentDescription = null,
+                    tint = Color(0xFF2E7D32),
+                    modifier = Modifier.size(15.dp)
+                  )
+                  Spacer(modifier = Modifier.width(6.dp))
                   Text(
-                    text = "+$earnedXp XP",
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White
+                    text = "Các thẻ ghi nhớ bài học này đã tự động lưu vào Sổ tay Profile của bạn.",
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = Color(0xFF1B5E20)
                   )
                 }
               }
