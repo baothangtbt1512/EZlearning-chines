@@ -58,27 +58,7 @@ class ChineseTtsHelper(private val context: Context) {
   val isSpeaking: StateFlow<Boolean> = _isSpeaking.asStateFlow()
 
   init {
-    maximizeVolume()
     initTts()
-  }
-
-  /**
-   * Ensure STREAM_MUSIC is unmuted and set to full volume.
-   */
-  fun maximizeVolume() {
-    try {
-      val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as? AudioManager
-      if (audioManager != null) {
-        val maxVol = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
-        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, maxVol, 0)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-          audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_UNMUTE, 0)
-        }
-        Log.d(TAG, "Audio volume maximized to $maxVol / $maxVol")
-      }
-    } catch (e: Exception) {
-      Log.w(TAG, "Failed setting audio volume: ${e.message}")
-    }
   }
 
   private fun initTts() {
@@ -168,7 +148,6 @@ class ChineseTtsHelper(private val context: Context) {
 
     Log.d(TAG, "Speak requested for: '$cleanText' (original: '$text')")
     stop()
-    maximizeVolume()
 
     activeJob = coroutineScope.launch {
       // 1. High-fidelity cached or downloaded audio stream
@@ -319,7 +298,6 @@ class ChineseTtsHelper(private val context: Context) {
           AudioAttributes.Builder()
             .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
             .setUsage(AudioAttributes.USAGE_MEDIA)
-            .setFlags(AudioAttributes.FLAG_AUDIBILITY_ENFORCED)
             .build()
         )
         setDataSource(file.absolutePath)
@@ -357,7 +335,6 @@ class ChineseTtsHelper(private val context: Context) {
           AudioAttributes.Builder()
             .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
             .setUsage(AudioAttributes.USAGE_MEDIA)
-            .setFlags(AudioAttributes.FLAG_AUDIBILITY_ENFORCED)
             .build()
         )
         setDataSource(context, Uri.parse(streamUrl))
@@ -433,7 +410,6 @@ class ChineseTtsHelper(private val context: Context) {
         AudioAttributes.Builder()
           .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
           .setUsage(AudioAttributes.USAGE_MEDIA)
-          .setFlags(AudioAttributes.FLAG_AUDIBILITY_ENFORCED)
           .build(),
         AudioFormat.Builder()
           .setSampleRate(sampleRate)

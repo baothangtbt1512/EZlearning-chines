@@ -65,6 +65,7 @@ import com.example.model.MicroLesson
 import com.example.model.NodeCourseData
 import com.example.model.SkillType
 import com.example.ui.components.DiscoverVocabCards
+import com.example.ui.components.LessonReviewDialog
 import com.example.ui.components.MultipleChoiceActivity
 import com.example.ui.components.PandaAvatar
 import com.example.ui.components.PandaConversationActivity
@@ -482,231 +483,57 @@ fun LearningSessionScreen(
       }
     }
 
-    // 4. Regular Micro-Lesson Completion Dialog (Lessons 1 - 8)
+    // 4. Universal Lesson Review & Explanation Dialog (Appears after EVERY lesson finishes)
     if (showLessonSuccessDialog) {
-      Dialog(onDismissRequest = { showLessonSuccessDialog = false }) {
-        Surface(
-          shape = RoundedCornerShape(24.dp),
-          color = Color.White,
-          modifier = Modifier
-            .fillMaxWidth()
-            .border(1.dp, SoftBorder, RoundedCornerShape(24.dp))
-        ) {
-          Column(
-            modifier = Modifier.padding(24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-          ) {
-            PandaAvatar(size = 80.dp)
-            Spacer(modifier = Modifier.height(14.dp))
-
-            Text(
-              text = "Hoàn thành bài học! 🎉",
-              fontSize = 22.sp,
-              fontWeight = FontWeight.ExtraBold,
-              color = DarkJade
-            )
-
-            Spacer(modifier = Modifier.height(6.dp))
-
-            Text(
-              text = currentLesson.title,
-              fontSize = 14.sp,
-              color = SecondaryText
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Box(
-              modifier = Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(16.dp))
-                .background(JadeContainer)
-                .padding(14.dp),
-              contentAlignment = Alignment.Center
-            ) {
-              Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(text = "⭐", fontSize = 24.sp)
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                  text = "+10 XP Đã nhận!",
-                  fontSize = 17.sp,
-                  fontWeight = FontWeight.Bold,
-                  color = DarkJade
-                )
-              }
-            }
-
-            Spacer(modifier = Modifier.height(20.dp))
-
-            val hasNextLesson = currentLessonIdx + 1 < nodeCourse.microLessons.size
-
-            Button(
-              onClick = {
-                showLessonSuccessDialog = false
-                if (hasNextLesson) {
-                  currentLessonIdx++
-                  currentActivityIdx = 0
-                  isAnswerSubmitted = false
-                  selectedOption = null
-                  selectedWords = emptyList()
-                  speakingScore = null
-                } else {
-                  onExitSession()
-                }
-              },
-              modifier = Modifier
-                .fillMaxWidth()
-                .height(50.dp)
-                .testTag("next_lesson_button"),
-              shape = RoundedCornerShape(14.dp),
-              colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF00796B),
-                contentColor = Color.White
-              ),
-              elevation = ButtonDefaults.buttonElevation(defaultElevation = 2.dp)
-            ) {
-              Text(
-                text = if (hasNextLesson) "Bắt đầu Micro-Lesson tiếp theo →" else "Hoàn tất khóa học",
-                fontSize = 15.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.White
-              )
-            }
+      val hasNextLesson = currentLessonIdx + 1 < nodeCourse.microLessons.size
+      LessonReviewDialog(
+        lesson = currentLesson,
+        nodeCourse = nodeCourse,
+        isLastLessonInCourse = false,
+        earnedXp = 10,
+        onPlayAudio = onPlayAudio,
+        onDismiss = { showLessonSuccessDialog = false },
+        onNextLesson = {
+          showLessonSuccessDialog = false
+          if (hasNextLesson) {
+            currentLessonIdx++
+            currentActivityIdx = 0
+            isAnswerSubmitted = false
+            selectedOption = null
+            selectedWords = emptyList()
+            speakingScore = null
+          } else {
+            onExitSession()
           }
+        },
+        onExitToJourney = {
+          showLessonSuccessDialog = false
+          onExitSession()
         }
-      }
+      )
     }
 
-    // 5. Final Course / Destination Mastered Victory Dialog (Lesson 9 / Node Completed)
+    // 5. Final Lesson / Course Mastered Review & Explanation Dialog
     if (showCourseMasteredDialog) {
-      Dialog(onDismissRequest = {
-        showCourseMasteredDialog = false
-        onExitSession()
-      }) {
-        Surface(
-          shape = RoundedCornerShape(26.dp),
-          color = Color.White,
-          modifier = Modifier
-            .fillMaxWidth()
-            .border(2.dp, WarmGold, RoundedCornerShape(26.dp))
-        ) {
-          Column(
-            modifier = Modifier.padding(24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-          ) {
-            Box(contentAlignment = Alignment.Center) {
-              PandaAvatar(size = 90.dp)
-            }
-
-            Spacer(modifier = Modifier.height(14.dp))
-
-            Text(
-              text = "🏆 ĐIỂM ĐẾN HOÀN THÀNH!",
-              fontSize = 20.sp,
-              fontWeight = FontWeight.ExtraBold,
-              color = DarkJade,
-              textAlign = TextAlign.Center
-            )
-
-            Spacer(modifier = Modifier.height(4.dp))
-
-            Text(
-              text = "${nodeCourse.title} đã được bạn làm chủ hoàn toàn!",
-              fontSize = 14.sp,
-              color = SecondaryText,
-              textAlign = TextAlign.Center
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Bonus XP & Badges
-            Box(
-              modifier = Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(18.dp))
-                .background(
-                  Brush.linearGradient(listOf(JadeContainer, Color(0xFFFFF9C4)))
-                )
-                .border(1.dp, WarmGold, RoundedCornerShape(18.dp))
-                .padding(14.dp)
-            ) {
-              Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                  Text(text = "🎖️", fontSize = 24.sp)
-                  Spacer(modifier = Modifier.width(6.dp))
-                  Text(
-                    text = "+25 XP Thưởng Thành Tích!",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = DarkJade
-                  )
-                }
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                  text = "🔓 Đã mở khóa trạm tiếp theo trên Bản đồ!",
-                  fontSize = 12.sp,
-                  fontWeight = FontWeight.SemiBold,
-                  color = PrimaryJade
-                )
-              }
-            }
-
-            Spacer(modifier = Modifier.height(20.dp))
-
-            // Action 1: Continue to next destination
-            Button(
-              onClick = {
-                showCourseMasteredDialog = false
-                onStartNextNode(nodeCourse.nodeId)
-              },
-              modifier = Modifier
-                .fillMaxWidth()
-                .height(50.dp)
-                .testTag("start_next_node_button"),
-              shape = RoundedCornerShape(14.dp),
-              colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF00796B),
-                contentColor = Color.White
-              ),
-              elevation = ButtonDefaults.buttonElevation(defaultElevation = 2.dp)
-            ) {
-              Text(
-                text = "Học trạm tiếp theo 🚀",
-                fontSize = 15.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.White
-              )
-            }
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            // Action 2: Return to Journey map
-            Button(
-              onClick = {
-                showCourseMasteredDialog = false
-                onExitSession()
-              },
-              modifier = Modifier
-                .fillMaxWidth()
-                .height(48.dp)
-                .testTag("return_to_journey_button"),
-              shape = RoundedCornerShape(14.dp),
-              colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFFF7F5F0),
-                contentColor = Color(0xFF004D40)
-              ),
-              border = androidx.compose.foundation.BorderStroke(1.5.dp, Color(0xFFD4CDC0))
-            ) {
-              Text(
-                text = "Trở về Bản đồ thế giới 🗺️",
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color(0xFF004D40)
-              )
-            }
-          }
+      LessonReviewDialog(
+        lesson = currentLesson,
+        nodeCourse = nodeCourse,
+        isLastLessonInCourse = true,
+        earnedXp = 25,
+        onPlayAudio = onPlayAudio,
+        onDismiss = {
+          showCourseMasteredDialog = false
+          onExitSession()
+        },
+        onNextLesson = {
+          showCourseMasteredDialog = false
+          onStartNextNode(nodeCourse.nodeId)
+        },
+        onExitToJourney = {
+          showCourseMasteredDialog = false
+          onExitSession()
         }
-      }
+      )
     }
   }
 }

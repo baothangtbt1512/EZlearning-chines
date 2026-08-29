@@ -139,7 +139,6 @@ class LearnerViewModel(application: Application) : AndroidViewModel(application)
     _activeLessonIndex.value = lessonIndex
     _selectedNode.value = null
     _currentScreen.value = ScreenRoute.LEARNING_SESSION
-    ttsHelper.maximizeVolume()
     course?.let { c ->
       val words = c.vocabulary.map { it.hanzi } + c.microLessons.flatMap { l -> l.activities.map { it.audioText } }
       ttsHelper.preloadWords(words.filter { it.isNotBlank() })

@@ -94,4 +94,19 @@ class ExampleRobolectricTest {
     val updatedState = repository.state.value
     assertTrue((updatedState.skills[SkillType.VOCABULARY] ?: 0) > 0)
   }
+
+  @Test
+  fun `verify lesson review data extraction contains hanzi pinyin and vietnamese`() {
+    val nodeCourse = World1Curriculum.getNodeCourse("w1_n1")
+    assertNotNull(nodeCourse)
+    val firstLesson = nodeCourse!!.microLessons.first()
+    val (reviewItems, explanation) = com.example.ui.components.extractLessonReviewData(firstLesson, nodeCourse)
+
+    assertTrue(reviewItems.isNotEmpty())
+    assertTrue(explanation.isNotBlank())
+    val item = reviewItems.first()
+    assertTrue(item.hanzi.isNotBlank())
+    assertTrue(item.pinyin.isNotBlank())
+    assertTrue(item.vietnameseMeaning.isNotBlank())
+  }
 }
