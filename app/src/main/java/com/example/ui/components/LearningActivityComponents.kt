@@ -1782,11 +1782,21 @@ fun SpeakingActivityView(
 
     Spacer(modifier = Modifier.height(10.dp))
 
+    if (isRecording) {
+      AnimatedSoundwaveEqualizer(
+        modifier = Modifier.padding(vertical = 4.dp),
+        barCount = 11,
+        baseColor = Color(0xFFE53935)
+      )
+      Spacer(modifier = Modifier.height(4.dp))
+    }
+
     Text(
-      text = if (isRecording) "🎙️ Đang lắng nghe... Nói to và rõ ràng vào micro!" else "Nhấn vào Micro để bắt đầu đọc",
+      text = if (isRecording) "🎙️ Đang lắng nghe... Hãy đọc to chữ Hán vào micro! (Nhấn để dừng)" else "Nhấn vào Micro để bắt đầu đọc",
       fontSize = 14.sp,
       fontWeight = FontWeight.Bold,
-      color = if (isRecording) Color(0xFFD32F2F) else Color(0xFF4A5568)
+      color = if (isRecording) Color(0xFFD32F2F) else Color(0xFF4A5568),
+      textAlign = TextAlign.Center
     )
 
     // 3. Pronunciation Real-Time Evaluation Result Card
